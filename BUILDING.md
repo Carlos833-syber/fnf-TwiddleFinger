@@ -142,8 +142,10 @@ haxelib run lime config ANDROID_NDK_ROOT "$ANDROID_NDK_ROOT"
 haxelib run lime config JAVA_HOME /caminho/jdk-11
 haxelib run lime config ANDROID_SETUP true
 ulimit -s 65536
-export HXCPP_STRIP="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
-ANDROID_GRADLE_TASK=assembleDebug haxelib run lime build android -D HXCPP_ARM64 -D HXCPP_M64 -D ANDROID_HOST=linux-x86_64
+export ANDROID_HOST=linux-x86_64
+export PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$ANDROID_HOST/bin:$PATH"
+export HXCPP_STRIP="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$ANDROID_HOST/bin/llvm-strip"
+ANDROID_GRADLE_TASK=assembleDebug haxelib run lime build android -D HXCPP_ARM64 -D HXCPP_M64
 ```
 
 Saída: `export/release/android/bin/app/build/outputs/apk/debug/TwiddleFinger-debug.apk`.
