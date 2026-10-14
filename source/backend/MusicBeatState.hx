@@ -21,6 +21,25 @@ class MusicBeatState extends FlxUIState
 		return Controls.instance;
 	}
 
+	#if android
+	var mobileControls:MobileControls;
+
+	override public function draw():Void
+	{
+		super.draw();
+		if (mobileControls != null)
+			mobileControls.drawOverlay();
+	}
+
+	override public function destroy():Void
+	{
+		if (mobileControls != null)
+			mobileControls.destroy();
+		super.destroy();
+	}
+	#end
+
+
 	var _psychCameraInitialized:Bool = false;
 
 	override function create() {
@@ -36,6 +55,9 @@ class MusicBeatState extends FlxUIState
 		}
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
+		#if android
+		mobileControls = new MobileControls();
+		#end
 	}
 
 	public function initPsychCamera():PsychCamera

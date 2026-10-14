@@ -3,6 +3,7 @@ package export.release.windows.bin.mods.stages;
 
 
 import backend.ClientPrefs;
+import backend.Controls;
 import backend.CrossUtil;
 import flixel.addons.display.FlxRuntimeShader;
 import flixel.text.FlxText;
@@ -333,7 +334,7 @@ function onCreatePost() {
 
 function onUpdatePost(elapsed) {
 
-    if (helpMeMode && FlxG.mouse.overlaps(helpMeButton,game.camHUD) && FlxG.mouse.justPressed) {
+    if (helpMeMode && Controls.pointerJustPressed(helpMeButton, game.camHUD)) {
         helpButtonCount++;
         helpMeButton.scale.set(0.375,0.375);
         //debugPrint('clickCOunt:' + helpButtonCount);

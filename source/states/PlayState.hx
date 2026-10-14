@@ -2731,6 +2731,20 @@ class PlayState extends MusicBeatState
 	// Hold notes
 	private function keysCheck():Void
 	{
+		#if android
+		// Keyboard events do not fire for touch; reuse the same judgement path.
+		// Gamepad polling below already includes touch while controllerMode is on.
+		if (!controls.controllerMode)
+			for (i in 0...keysArray.length)
+			{
+				if (backend.MobileControls.justPressed(keysArray[i]) && strumsBlocked[i] != true)
+					keyPressed(i);
+				if (backend.MobileControls.justReleased(keysArray[i]))
+					keyReleased(i);
+			}
+		#end
+
+
 		// HOLDING
 		var holdArray:Array<Bool> = [];
 		var pressArray:Array<Bool> = [];

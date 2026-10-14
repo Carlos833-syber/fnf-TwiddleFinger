@@ -105,3 +105,62 @@ To fix that, install the `g++` package for your Linux Distro, names for said pac
 e.g: Fedora is `gcc-c++`, Gentoo is `sys-devel/gcc`, and so on.
 
 ---
+
+## Android: baixar somente o APK
+
+O workflow **Android APK** compila para Android 6.0+ (ARM64), com controles por
+toque, scripts e recursos do mod incluídos no aplicativo.
+
+1. Abra **Actions → Android APK → Run workflow** e selecione a branch do port.
+2. Aguarde o build terminar.
+3. Abra o link **Download direto** no resumo da execução, ou abra **Releases** e
+   baixe **TwiddleFinger-android-arm64.apk** em **Assets**.
+
+O arquivo publicado é o APK, sem ZIP intermediário. Os links automáticos
+“Source code (zip)” e “Source code (tar.gz)” do GitHub são apenas o código-fonte;
+não são o jogo. Pull requests compilam e verificam a assinatura, sem publicar
+uma release. Executar manualmente publica uma pré-release de teste.
+
+O APK usa assinatura de depuração para permitir instalação sem configurar
+segredos. A chave muda entre máquinas/execuções: para instalar outra build pode
+ser necessário desinstalar a anterior, apagando os saves. Para uma distribuição
+estável, configure uma chave de assinatura própria antes de publicar versões.
+O port ainda precisa de teste em aparelho para validar vídeo, áudio e multitouch.
+O atlas `bgasset` mede 4228 × 4543 pixels: o aparelho precisa aceitar texturas
+maiores que 4096 pixels (normalmente limite de 8192 ou superior).
+
+### Compilar localmente
+
+Use Haxe **4.3.4**, Java **11**, Android SDK **33**, Build Tools **33.0.2** e
+NDK **25.2.9519653**. Exemplo para Linux x86-64, no diretório do projeto:
+
+```bash
+bash scripts/setup-android.sh
+haxelib run lime config ANDROID_SDK /caminho/android-sdk
+export ANDROID_NDK_ROOT=/caminho/android-sdk/ndk/25.2.9519653
+haxelib run lime config ANDROID_NDK_ROOT "$ANDROID_NDK_ROOT"
+haxelib run lime config JAVA_HOME /caminho/jdk-11
+haxelib run lime config ANDROID_SETUP true
+ulimit -s 65536
+export HXCPP_STRIP="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
+ANDROID_GRADLE_TASK=assembleDebug haxelib run lime build android -D HXCPP_ARM64 -D HXCPP_M64 -D ANDROID_HOST=linux-x86_64
+```
+
+Saída: `export/release/android/bin/app/build/outputs/apk/debug/TwiddleFinger-debug.apk`.
+O script fixa as bibliotecas usadas pelo Android; não use as versões flutuantes
+do `hmm.json` para este alvo.
+
+### Verificar no aparelho
+
+- Abrir o jogo após uma instalação limpa e iniciar TwiddleFinger.
+- Acertar duas notas simultâneas, sustentar uma nota e soltar cada dedo separadamente.
+- Abrir e fechar as opções; pausar, continuar e tentar novamente após perder.
+- Pausar durante um vídeo e verificar áudio/vídeo ao continuar.
+- Testar os dois finais: tocar em “Help Me” até completar a meta e jogar sem ajudar.
+
+Os testes `python3 tests/android-assets.py` e `python3 tests/mobile-controls.py`
+validam extração e lógica de entrada com fixtures; não substituem esses testes
+de reprodução e toque em Android.
+
+O limite de stack de 64 MiB evita uma falha do Clang ao compilar os metadados
+de classes do SScript; o build define esse limite automaticamente no workflow.

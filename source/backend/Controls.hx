@@ -7,6 +7,21 @@ import flixel.input.keyboard.FlxKey;
 
 class Controls
 {
+	/** Shared with stage scripts; Android ignores synthesized mouse events. */
+	@:keep public static function pointerJustPressed(sprite:FlxSprite, camera:FlxCamera):Bool
+	{
+		#if android
+		for (touch in FlxG.touches.list)
+			if (touch.justPressed && touch.overlaps(sprite, camera))
+				return true;
+		return false;
+		#else
+		return FlxG.mouse.justPressed && FlxG.mouse.overlaps(sprite, camera);
+		#end
+	}
+
+
+
 	//Keeping same use cases on stuff for it to be easier to understand/use
 	//I'd have removed it but this makes it a lot less annoying to use in my opinion
 
@@ -87,6 +102,9 @@ class Controls
 	public var gamepadBinds:Map<String, Array<FlxGamepadInputID>>;
 	public function justPressed(key:String)
 	{
+		#if android
+		if (MobileControls.justPressed(key)) return true;
+		#end
 		var result:Bool = (FlxG.keys.anyJustPressed(keyboardBinds[key]) == true);
 		if(result) controllerMode = false;
 
@@ -95,6 +113,9 @@ class Controls
 
 	public function pressed(key:String)
 	{
+		#if android
+		if (MobileControls.pressed(key)) return true;
+		#end
 		var result:Bool = (FlxG.keys.anyPressed(keyboardBinds[key]) == true);
 		if(result) controllerMode = false;
 
@@ -103,6 +124,9 @@ class Controls
 
 	public function justReleased(key:String)
 	{
+		#if android
+		if (MobileControls.justReleased(key)) return true;
+		#end
 		var result:Bool = (FlxG.keys.anyJustReleased(keyboardBinds[key]) == true);
 		if(result) controllerMode = false;
 

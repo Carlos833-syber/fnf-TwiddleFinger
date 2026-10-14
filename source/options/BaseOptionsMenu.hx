@@ -289,6 +289,16 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 	function bindingKeyUpdate(elapsed:Float)
 	{
+		#if android
+		if (backend.MobileControls.justPressed('back'))
+		{
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+			closeBinding();
+			return;
+		}
+		#end
+
+
 		if(FlxG.keys.pressed.ESCAPE || FlxG.gamepads.anyPressed(B))
 		{
 			holdingEsc += elapsed;

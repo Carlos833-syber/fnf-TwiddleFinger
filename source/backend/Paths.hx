@@ -175,10 +175,21 @@ class Paths
 		#if MODS_ALLOWED
 		var file:String = modsVideo(key);
 		if(FileSystem.exists(file)) {
-			return file;
+			return nativeFile(file);
 		}
 		#end
-		return 'assets/videos/$key.$VIDEO_EXT';
+		return nativeFile('assets/videos/$key.$VIDEO_EXT');
+	}
+
+	// Android's native loaders resolve relative paths against the APK/storage root,
+	// whereas scripts run from the extracted game-content working directory.
+	static function nativeFile(file:String):String
+	{
+		#if android
+		return FileSystem.fullPath(file);
+		#else
+		return file;
+		#end
 	}
 
 	static public function sound(key:String, ?library:String):Sound
@@ -228,7 +239,7 @@ class Paths
 			return currentTrackedAssets.get(file);
 		}
 		else if (FileSystem.exists(file))
-			bitmap = BitmapData.fromFile(file);
+			bitmap = BitmapData.fromFile(nativeFile(file));
 		else
 		#end
 		{
@@ -258,7 +269,7 @@ class Paths
 		{
 			#if MODS_ALLOWED
 			if (FileSystem.exists(file))
-				bitmap = BitmapData.fromFile(file);
+				bitmap = BitmapData.fromFile(nativeFile(file));
 			else
 			#end
 			{
@@ -317,7 +328,7 @@ class Paths
 		#if MODS_ALLOWED
 		var file:String = modsFont(key);
 		if(FileSystem.exists(file)) {
-			return file;
+			return nativeFile(file);
 		}
 		#end
 		return 'assets/fonts/$key';
@@ -439,7 +450,7 @@ class Paths
 		if(FileSystem.exists(file)) {
 			if(!currentTrackedSounds.exists(file))
 			{
-				currentTrackedSounds.set(file, Sound.fromFile(file));
+				currentTrackedSounds.set(file, Sound.fromFile(nativeFile(file)));
 				//trace('precached mod sound: $file');
 			}
 			localTrackedAssets.push(file);

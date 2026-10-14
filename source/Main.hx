@@ -1,9 +1,6 @@
 package;
 
 import states.MaxMenu;
-#if android
-import android.content.Context;
-#end
 
 import debug.FPSCounter;
 
@@ -64,9 +61,7 @@ class Main extends Sprite
 		super();
 
 		// Credits to MAJigsaw77 (he's the og author for this code)
-		#if android
-		Sys.setCwd(Path.addTrailingSlash(Context.getExternalFilesDir()));
-		#elseif ios
+		#if ios
 		Sys.setCwd(lime.system.System.applicationStorageDirectory);
 		#end
 
@@ -92,6 +87,10 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
+		#if android
+		backend.AndroidAssets.prepare();
+		#end
+
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 
