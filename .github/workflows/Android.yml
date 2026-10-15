@@ -51,6 +51,7 @@ jobs:
           python3 tests/android-atlases.py
           python3 scripts/prepare-android-assets.py
           python3 tests/android-assets.py
+          python3 tests/android-diagnostics.py
           python3 tests/mobile-controls.py
       - name: Configure Lime
         run: |

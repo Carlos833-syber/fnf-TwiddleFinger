@@ -103,6 +103,8 @@ class MaxMenu extends MusicBeatState
         add(optionsButton);
         group.push(optionsButton);
 
+        #if android backend.AndroidDiagnostics.finish(); #end
+
     }
 
     override function update(elapsed:Float) {
@@ -124,6 +126,7 @@ class MaxMenu extends MusicBeatState
                         FlxTween.tween(face, {alpha: 1},2, {onComplete: Void->{
                             eye.visible = face.visible = false;
                             Difficulty.resetList();
+                            #if android backend.AndroidDiagnostics.begin('Lendo chart de TwiddleFinger'); #end
                             var formatedSong:String = Paths.formatToSongPath('twiddlefinger');
                             var diffFormatting:String = Highscore.formatSong(formatedSong, 1);
 

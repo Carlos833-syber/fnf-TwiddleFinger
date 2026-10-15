@@ -7,6 +7,7 @@
 	<!-- Standalone Android package; native dependencies target ARM64. -->
 	<section if="android">
 		<app title="TwiddleFinger" package="com.carlos833.twiddlefinger" packageName="com.carlos833.twiddlefinger" />
+		<app title="TwiddleFinger Diagnostico" package="com.carlos833.twiddlefinger.diagnostic" packageName="com.carlos833.twiddlefinger.diagnostic" if="ANDROID_DIAGNOSTIC_APP" />
 		<architecture exclude="armv7" />
 		<architecture name="arm64" />
 		<config:android minimum-sdk-version="23" target-sdk-version="33" build-tools-version="33.0.2" />
@@ -158,6 +159,10 @@
 	<haxedef name="HXCPP_CHECK_POINTER" if="CRASH_HANDLER" />
 	<haxedef name="HXCPP_STACK_LINE" if="CRASH_HANDLER" />
 	<haxedef name="HXCPP_STACK_TRACE" if="CRASH_HANDLER" />
+	<!-- Keep Android exception details without the desktop-only crash dialog. -->
+	<haxedef name="HXCPP_CHECK_POINTER" if="android" />
+	<haxedef name="HXCPP_STACK_LINE" if="android" />
+	<haxedef name="HXCPP_STACK_TRACE" if="android" />
 	
 	<!--Disable deprecated warnings-->
 	<haxedef name='no-deprecation-warnings' />

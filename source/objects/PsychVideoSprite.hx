@@ -33,6 +33,7 @@ class PsychVideoSprite extends FlxVideoSprite
 
     public override function load(location:hxvlc.util.OneOfThree<String, Int, haxe.io.Bytes>, ?options:Array<String>):Bool
     {
+        #if android backend.AndroidDiagnostics.checkpoint('Carregando video: ' + Std.string(location)); #end
         var b:Bool = super.load(location,options);
         if (!b) return b;
 

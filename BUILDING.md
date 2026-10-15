@@ -126,6 +126,16 @@ segredos. A chave muda entre máquinas/execuções: para instalar outra build po
 ser necessário desinstalar a anterior, apagando os saves. Para uma distribuição
 estável, configure uma chave de assinatura própria antes de publicar versões.
 O port ainda precisa de teste em aparelho para validar vídeo, áudio e multitouch.
+Se o carregamento fechar antes de iniciar a música, abra o aplicativo novamente:
+o relatório aparece na tela, com **Copiar relatorio** e **Continuar**. Envie uma
+captura ou o texto copiado. Erros Haxe capturados mostram a exceção e a stack;
+falhas nativas ou encerramentos pelo sistema mostram somente as últimas etapas,
+sem atribuir uma causa. Fechar manualmente durante o carregamento também pode
+gerar esse aviso. O diagnóstico fica no armazenamento privado do aplicativo,
+sem permissões de arquivos e sem envio automático ao GitHub.
+Para instalar uma cópia de diagnóstico ao lado do jogo e preservar os saves,
+adicione `-D ANDROID_DIAGNOSTIC_APP` ao comando de build. Ela aparece como
+**TwiddleFinger Diagnostico** e usa outro identificador de aplicativo.
 Os atlas grandes do mod são reempacotados em páginas de até 4096 pixels no
 build Android, sem reduzir os sprites ou alterar animações e offsets.
 O Android usa a proporção 16:9 (1280 × 720) da Psych, com barras em telas mais

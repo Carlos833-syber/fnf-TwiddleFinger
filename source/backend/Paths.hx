@@ -251,7 +251,10 @@ class Paths
 			return currentTrackedAssets.get(file);
 		}
 		else if (FileSystem.exists(file))
+		{
+			#if android AndroidDiagnostics.checkpoint('Lendo imagem: ' + key); #end
 			bitmap = BitmapData.fromFile(nativeFile(file));
+		}
 		else
 		#end
 		{
@@ -297,6 +300,7 @@ class Paths
 		localTrackedAssets.push(file);
 		if (allowGPU && ClientPrefs.data.cacheOnGPU)
 		{
+			#if android AndroidDiagnostics.checkpoint('Enviando textura para GPU: ' + file); #end
 			var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
 			texture.uploadFromBitmapData(bitmap);
 			bitmap.image.data = null;
@@ -508,6 +512,7 @@ class Paths
 		{
 			if (!currentTrackedSounds.exists(file))
 			{
+				#if android AndroidDiagnostics.checkpoint('Lendo audio: ' + key); #end
 				currentTrackedSounds.set(file, Sound.fromFile(nativeFile(file)));
 				// trace('precached mod sound: $file');
 			}

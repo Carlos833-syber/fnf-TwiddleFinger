@@ -425,6 +425,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		// STAGE SCRIPTS
+		#if android backend.AndroidDiagnostics.checkpoint('Iniciando script do palco: ' + curStage); #end
 		#if LUA_ALLOWED
 		startLuasNamed('stages/' + curStage + '.lua');
 		#end
@@ -510,6 +511,7 @@ class PlayState extends MusicBeatState
 		playerStrums = new FlxTypedGroup<StrumNote>();
 
 		generateSong(SONG.song);
+		#if android backend.AndroidDiagnostics.checkpoint('Notas e audio preparados'); #end
 
 		noteGroup.add(grpNoteSplashes);
 
@@ -633,6 +635,7 @@ class PlayState extends MusicBeatState
 		resetRPC();
 
 		callOnScripts('onCreatePost');
+		#if android backend.AndroidDiagnostics.checkpoint('Finalizando carregamento da musica'); #end
 
 		cacheCountdown();
 		cachePopUpScore();
@@ -641,6 +644,7 @@ class PlayState extends MusicBeatState
 		Paths.clearUnusedMemory();
 
 		if(eventNotes.length < 1) checkEventNote();
+		#if android backend.AndroidDiagnostics.checkpoint('Aguardando primeiro quadro e contagem da musica'); #end
 	}
 
 	function set_songSpeed(value:Float):Float
@@ -1232,6 +1236,7 @@ class PlayState extends MusicBeatState
 		#end
 		setOnScripts('songLength', songLength);
 		callOnScripts('onSongStart');
+		#if android backend.AndroidDiagnostics.finish(); #end
 	}
 
 	var debugNum:Int = 0;

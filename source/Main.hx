@@ -83,6 +83,7 @@ class Main extends Sprite
 	private function setupGame():Void
 	{
 		#if android
+		backend.AndroidDiagnostics.install();
 		backend.AndroidAssets.prepare();
 		#end
 
