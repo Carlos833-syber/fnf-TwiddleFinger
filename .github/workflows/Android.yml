@@ -70,11 +70,14 @@ jobs:
           export PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$ANDROID_HOST/bin:$PATH"
           export HXCPP_STRIP="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$ANDROID_HOST/bin/llvm-strip"
           clang++ --version
+          haxelib run lime clean android
           haxelib run lime build android -D HXCPP_ARM64 -D HXCPP_M64
       - name: Validate and stage APK
         run: |
           apk=export/release/android/bin/app/build/outputs/apk/debug/TwiddleFinger-debug.apk
           test -s "$apk"
+          python3 scripts/validate-android-native.py "$apk" \
+            --nm "$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm"
           "$ANDROID_HOME/build-tools/33.0.2/apksigner" verify "$apk"
           mkdir -p dist
           cp "$apk" dist/TwiddleFinger-android-arm64.apk
