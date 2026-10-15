@@ -135,7 +135,7 @@ gerar esse aviso. O diagnóstico fica no armazenamento privado do aplicativo,
 sem permissões de arquivos e sem envio automático ao GitHub.
 Para instalar uma cópia de diagnóstico ao lado do jogo e preservar os saves,
 adicione `-D ANDROID_DIAGNOSTIC_APP` ao comando de build. Ela aparece como
-**TwiddleFinger Diagnostico** e usa outro identificador de aplicativo.
+**TwiddleFinger** e usa outro identificador de aplicativo.
 Os atlas grandes do mod são reempacotados em páginas de até 4096 pixels no
 build Android, sem reduzir os sprites ou alterar animações e offsets.
 O Android usa a proporção 16:9 (1280 × 720) da Psych, com barras em telas mais
