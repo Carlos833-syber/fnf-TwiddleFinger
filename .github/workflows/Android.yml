@@ -47,6 +47,9 @@ jobs:
         run: bash scripts/setup-android.sh
       - name: Test packaged assets
         run: |
+          python3 -m pip install Pillow==11.3.0
+          python3 tests/android-atlases.py
+          python3 scripts/prepare-android-assets.py
           python3 tests/android-assets.py
           python3 tests/mobile-controls.py
       - name: Configure Lime

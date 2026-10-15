@@ -25,6 +25,19 @@ enum abstract Align(String)
 
 class FlxSprite extends flixel.FlxBasic
 {
+	public static var instances:Array<FlxSprite> = [];
+
+	public var antialiasing:Bool;
+	public var frames(default, set):Dynamic;
+	public var animation = new Animation();
+
+	function set_frames(value:Dynamic):Dynamic
+	{
+		width = value.width;
+		height = value.height;
+		return frames = value;
+	}
+
 	public var x:Float;
 	public var y:Float;
 	public var width:Int;
@@ -33,11 +46,29 @@ class FlxSprite extends flixel.FlxBasic
 	public var scrollFactor = new Pair();
 	public var cameras:Array<FlxCamera>;
 
-	public function new(x:Float, y:Float)
+	public function new(x:Float = 0, y:Float = 0)
 	{
 		super();
 		this.x = x;
 		this.y = y;
+		instances.push(this);
+	}
+
+	public function loadGraphic(value:Dynamic):FlxSprite
+	{
+		width = value.width;
+		height = value.height;
+		return this;
+	}
+
+	public function setGraphicSize(w:Int, h:Int):Void
+	{
+		width = w;
+		height = h;
+	}
+
+	public function updateHitbox():Void
+	{
 	}
 
 	public function makeGraphic(w:Int, h:Int, c:Int)
@@ -46,6 +77,38 @@ class FlxSprite extends flixel.FlxBasic
 		height = h;
 		return this;
 	}
+}
+
+class Animation
+{
+	public function new()
+	{
+	}
+
+	public function add(name:String, frames:Array<Int>):Void
+	{
+	}
+
+	public function play(name:String):Void
+	{
+	}
+}
+
+class Paths
+{
+	public static function getSparrowAtlas(name:String):Dynamic
+		return {getByName: (name:String) -> {width: 320, height: 720}};
+
+	public static function getPackerAtlas(name:String):Dynamic
+		return {getByName: (name:String) -> {width: 396, height: 135}};
+
+	public static function image(name:String):Dynamic
+		return {width: 1280, height: 720};
+}
+
+class ClientPrefs
+{
+	public static var data = {showHitboxes: true, antialiasing: true};
 }
 
 class FlxText extends FlxSprite

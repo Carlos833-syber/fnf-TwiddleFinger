@@ -126,8 +126,13 @@ segredos. A chave muda entre máquinas/execuções: para instalar outra build po
 ser necessário desinstalar a anterior, apagando os saves. Para uma distribuição
 estável, configure uma chave de assinatura própria antes de publicar versões.
 O port ainda precisa de teste em aparelho para validar vídeo, áudio e multitouch.
-O atlas `bgasset` mede 4228 × 4543 pixels: o aparelho precisa aceitar texturas
-maiores que 4096 pixels (normalmente limite de 8192 ou superior).
+Os atlas grandes do mod são reempacotados em páginas de até 4096 pixels no
+build Android, sem reduzir os sprites ou alterar animações e offsets.
+O Android usa a proporção 16:9 (1280 × 720) da Psych, com barras em telas mais
+largas. Os menus usam o D-pad e A/B da Psych Android; durante a música, quatro
+hitboxes ocupam toda a altura. Em **Options → Gameplay → Mostrar Hitboxes**,
+é possível ocultar as marcas sem desativar os toques. O botão de pausa fica
+no topo, ao centro, e não ativa as notas abaixo dele.
 
 ### Compilar localmente
 
@@ -136,6 +141,8 @@ NDK **25.2.9519653**. Exemplo para Linux x86-64, no diretório do projeto:
 
 ```bash
 bash scripts/setup-android.sh
+python3 -m pip install Pillow==11.3.0
+python3 scripts/prepare-android-assets.py
 haxelib run lime config ANDROID_SDK /caminho/android-sdk
 export ANDROID_NDK_ROOT=/caminho/android-sdk/ndk/25.2.9519653
 haxelib run lime config ANDROID_NDK_ROOT "$ANDROID_NDK_ROOT"
@@ -157,12 +164,15 @@ do `hmm.json` para este alvo.
 - Abrir o jogo após uma instalação limpa e iniciar TwiddleFinger.
 - Acertar duas notas simultâneas, sustentar uma nota e soltar cada dedo separadamente.
 - Abrir e fechar as opções; pausar, continuar e tentar novamente após perder.
+- Ocultar/mostrar hitboxes nas opções, reiniciar o app e confirmar que a escolha
+  foi salva; acertar notas no topo, centro e fundo de cada coluna e arrastar
+  o dedo entre colunas, inclusive com as marcas ocultas.
 - Pausar durante um vídeo e verificar áudio/vídeo ao continuar.
 - Testar os dois finais: tocar em “Help Me” até completar a meta e jogar sem ajudar.
 
-Os testes `python3 tests/android-assets.py` e `python3 tests/mobile-controls.py`
-validam extração e lógica de entrada com fixtures; não substituem esses testes
-de reprodução e toque em Android.
+Os testes `python3 tests/android-atlases.py`, `python3 tests/android-assets.py`
+e `python3 tests/mobile-controls.py` validam pixels/offsets dos atlas, limites
+de textura, extração e lógica de entrada; não substituem os testes no aparelho.
 
 O limite de stack de 64 MiB evita uma falha do Clang ao compilar os metadados
 de classes do SScript; o build define esse limite automaticamente no workflow.

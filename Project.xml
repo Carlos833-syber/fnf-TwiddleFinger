@@ -93,7 +93,7 @@
 
 	<section if="MODS_ALLOWED">
 		<assets path='example_mods' rename='mods' embed='false' unless='android'/>
-		<assets path='example_mods' rename='mods' type='binary' embed='false' if='android'/>
+		<assets path='export/android-mods' rename='mods' type='binary' embed='false' if='android'/>
 	</section>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 

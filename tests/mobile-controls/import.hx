@@ -3,3 +3,5 @@ import TestTypes.FlxSprite;
 import TestTypes.FlxCamera;
 import TestTypes.FlxText;
 import TestTypes.PlayState;
+import TestTypes.Paths;
+import TestTypes.ClientPrefs;

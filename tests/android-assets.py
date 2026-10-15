@@ -38,7 +38,7 @@ class Assets {
     public static function getBytes(id:String):haxe.io.Bytes {
         if (id == Sys.getEnv('TEST_MISSING')) return null;
         var path = StringTools.startsWith(id, 'mods/')
-            ? 'example_mods/' + id.substr(5) : id;
+            ? 'export/android-mods/' + id.substr(5) : id;
         var bytes = sys.io.File.getBytes(Sys.getEnv('TEST_PACKAGE') + '/' + path);
         return bytes.length == 0 ? null : bytes;
     }
@@ -63,6 +63,7 @@ class Test {
         path.write_text(content, encoding="utf-8")
 
     def extract(self, missing="", success=True):
+        shutil.copytree(self.root / 'example_mods', self.root / 'export/android-mods', dirs_exist_ok=True)
         env = dict(os.environ, TEST_STORAGE=str(self.storage.parent),
                    TEST_PACKAGE=str(self.root), TEST_MISSING=missing)
         result = subprocess.run(

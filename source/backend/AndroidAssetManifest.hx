@@ -50,7 +50,9 @@ class AndroidAssetManifest
 				}
 			}
 		}
-		visit('example_mods', 'mods', true);
+		if (!sys.FileSystem.exists('export/android-mods'))
+			haxe.macro.Context.fatalError('Run python3 scripts/prepare-android-assets.py before building Android.', haxe.macro.Context.currentPos());
+		visit('export/android-mods', 'mods', true);
 		visit('assets/videos', 'assets/videos', true);
 		visit('assets/shared', 'assets/shared', false);
 		return haxe.macro.Context.makeExpr(entries, haxe.macro.Context.currentPos());
