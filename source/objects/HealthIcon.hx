@@ -32,6 +32,7 @@ class HealthIcon extends FlxSprite
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-face'; //Prevents crash from missing icon
 			
 			var graphic = Paths.image(name, allowGPU);
+			#if android backend.AndroidDiagnostics.checkpoint('Criando quadros do icone: ' + char); #end
 			loadGraphic(graphic, true, Math.floor(graphic.width / 2), Math.floor(graphic.height));
 			iconOffsets[0] = (width - 150) / 2;
 			iconOffsets[1] = (height - 150) / 2;
@@ -40,6 +41,7 @@ class HealthIcon extends FlxSprite
 			animation.add(char, [0, 1], 0, false, isPlayer);
 			animation.play(char);
 			this.char = char;
+			#if android backend.AndroidDiagnostics.checkpoint('Icone pronto: ' + char); #end
 
 			if(char.endsWith('-pixel'))
 				antialiasing = false;

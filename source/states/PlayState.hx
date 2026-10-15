@@ -554,14 +554,17 @@ class PlayState extends MusicBeatState
 		iconP2.alpha = ClientPrefs.data.healthBarAlpha;
 		uiGroup.add(iconP2);
 
+		#if android backend.AndroidDiagnostics.checkpoint('Criando texto da pontuacao'); #end
 		scoreTxt = new FlxText(0, healthBar.y + 40, FlxG.width, "", 20);
 		scoreTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		scoreTxt.borderSize = 1.25;
 		scoreTxt.visible = !ClientPrefs.data.hideHud;
+		#if android backend.AndroidDiagnostics.checkpoint('Atualizando pontuacao inicial'); #end
 		updateScore(false);
 		uiGroup.add(scoreTxt);
 
+		#if android backend.AndroidDiagnostics.checkpoint('Criando texto BOTPLAY'); #end
 		botplayTxt = new FlxText(400, timeBar.y + 55, FlxG.width - 800, "BOTPLAY", 32);
 		botplayTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		botplayTxt.scrollFactor.set();
@@ -575,6 +578,7 @@ class PlayState extends MusicBeatState
 		noteGroup.cameras = [camHUD];
 		comboGroup.cameras = [camHUD];
 
+		#if android backend.AndroidDiagnostics.checkpoint('Carregando scripts de notas e eventos'); #end
 		startingSong = true;
 
 		#if LUA_ALLOWED
@@ -599,6 +603,7 @@ class PlayState extends MusicBeatState
 			eventNotes.sort(sortByTime);
 		}
 
+		#if android backend.AndroidDiagnostics.checkpoint('Carregando scripts da musica'); #end
 		// SONG SPECIFIC SCRIPTS
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'data/$songName/'))
@@ -616,12 +621,15 @@ class PlayState extends MusicBeatState
 			}
 		#end
 
+		#if android backend.AndroidDiagnostics.checkpoint('Iniciando contagem'); #end
 		startCallback();
+		#if android backend.AndroidDiagnostics.checkpoint('Calculando avaliacao inicial'); #end
 		RecalculateRating();
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 
+		#if android backend.AndroidDiagnostics.checkpoint('Preparando recursos da contagem'); #end
 		//PRECACHING THINGS THAT GET USED FREQUENTLY TO AVOID LAGSPIKES
 		if(ClientPrefs.data.hitsoundVolume > 0) Paths.sound('hitsound');
 		for (i in 1...4) Paths.sound('missnote$i');
@@ -634,6 +642,7 @@ class PlayState extends MusicBeatState
 
 		resetRPC();
 
+		#if android backend.AndroidDiagnostics.checkpoint('Chamando onCreatePost'); #end
 		callOnScripts('onCreatePost');
 		#if android backend.AndroidDiagnostics.checkpoint('Finalizando carregamento da musica'); #end
 

@@ -58,8 +58,13 @@ class FunkinLua {
 	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	public function new(scriptName:String) {
+		#if android backend.AndroidDiagnostics.checkpoint('Criando estado Lua: ' + scriptName); #end
 		lua = LuaL.newstate();
+		if (lua == null)
+			throw 'Nao foi possivel criar o estado Lua: ' + scriptName;
+		#if android backend.AndroidDiagnostics.checkpoint('Abrindo bibliotecas Lua: ' + scriptName); #end
 		LuaL.openlibs(lua);
+		#if android backend.AndroidDiagnostics.checkpoint('Registrando callbacks Lua: ' + scriptName); #end
 
 		//trace('Lua version: ' + Lua.version());
 		//trace("LuaJIT version: " + Lua.versionJIT());
@@ -1511,6 +1516,7 @@ class FunkinLua {
 		DeprecatedFunctions.implement(this);
 
 		try{
+			#if android backend.AndroidDiagnostics.checkpoint('Executando arquivo Lua: ' + scriptName); #end
 			var isString:Bool = !FileSystem.exists(scriptName);
 			var result:Dynamic = null;
 			if(!isString)
@@ -1536,7 +1542,9 @@ class FunkinLua {
 		}
 		trace('lua file loaded succesfully:' + scriptName);
 
+		#if android backend.AndroidDiagnostics.checkpoint('Chamando onCreate Lua: ' + scriptName); #end
 		call('onCreate', []);
+		#if android backend.AndroidDiagnostics.checkpoint('Script Lua pronto: ' + scriptName); #end
 	}
 
 	//main

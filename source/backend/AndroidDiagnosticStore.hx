@@ -45,7 +45,7 @@ class AndroidDiagnosticStore
 		steps.push(step);
 		if (steps.length > 12)
 			steps.shift();
-		report = 'TwiddleFinger Android - diagnostico 1\n'
+		report = 'TwiddleFinger Android - diagnostico 2\n'
 			+ 'Carregamento interrompido em '
 			+ Date.now().toString()
 			+ '\n'
@@ -61,7 +61,7 @@ class AndroidDiagnosticStore
 
 	public function fail(error:String, stack:String):Void
 	{
-		report = 'TwiddleFinger Android - diagnostico 1\nErro: ' + error + '\n\n' + stack + '\n\nEtapas recentes:\n' + steps.join('\n');
+		report = 'TwiddleFinger Android - diagnostico 2\nErro: ' + error + '\n\n' + stack + '\n\nEtapas recentes:\n' + steps.join('\n');
 		active = false;
 		save();
 	}

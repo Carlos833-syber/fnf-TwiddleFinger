@@ -270,7 +270,9 @@ class Paths
 
 		if (bitmap != null)
 		{
+			#if android AndroidDiagnostics.checkpoint('Imagem decodificada: ' + key); #end
 			var retVal = cacheBitmap(file, bitmap, allowGPU);
+			#if android AndroidDiagnostics.checkpoint('Imagem em cache: ' + key); #end
 			if (retVal != null)
 				return retVal;
 		}
