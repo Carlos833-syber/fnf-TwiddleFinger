@@ -162,6 +162,7 @@ ulimit -s 65536
 export ANDROID_HOST=linux-x86_64
 export PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$ANDROID_HOST/bin:$PATH"
 export HXCPP_STRIP="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$ANDROID_HOST/bin/llvm-strip"
+bash scripts/build-luajit-android.sh
 haxelib run lime clean android
 ANDROID_GRADLE_TASK=assembleDebug haxelib run lime build android -D HXCPP_ARM64 -D HXCPP_M64
 ```
@@ -189,3 +190,12 @@ O limite de stack de 64 MiB evita uma falha do Clang ao compilar os metadados
 de classes do SScript; o build define esse limite automaticamente no workflow.
 
 Before sharing an Android APK, run `python3 scripts/validate-android-native.py <apk> --nm <NDK>/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm`. This rejects unresolved HXCPP runtime symbols that Android would report as an SDL `dlopen failed` startup error. Always clean before changing HXCPP stack-trace defines; stale runtime objects can otherwise link into an APK that cannot start.
+
+Android ARM64 builds recompile LuaJIT from the commit and SHA-256 pinned in
+`scripts/build-luajit-android.sh`, using NDK 25.2.9519653 and the matching public
+headers. Run it after installing the Haxe libraries and configuring the NDK,
+before the clean game build; the workflow performs this step automatically.
+
+The LuaJIT archive is linked in full with local symbols to prevent VLC
+from supplying a different Lua ABI. The native APK check rejects external
+Lua imports as well as unresolved HXCPP symbols.

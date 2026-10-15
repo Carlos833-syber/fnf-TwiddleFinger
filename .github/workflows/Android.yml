@@ -61,6 +61,8 @@ jobs:
           haxelib run lime config JAVA_HOME "$JAVA_HOME"
           haxelib run lime config ANDROID_SETUP true
           echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/25.2.9519653" >> "$GITHUB_ENV"
+      - name: Rebuild pinned Android LuaJIT runtime
+        run: bash scripts/build-luajit-android.sh
       - name: Build installable ARM64 APK
         env:
           ANDROID_GRADLE_TASK: assembleDebug

@@ -1517,13 +1517,20 @@ class FunkinLua {
 
 		try
 		{
-			#if android backend.AndroidDiagnostics.checkpoint('Executando arquivo Lua: ' + scriptName); #end
+			#if android backend.AndroidDiagnostics.checkpoint('Compilando arquivo Lua: ' + scriptName); #end
 			var isString:Bool = !FileSystem.exists(scriptName);
 			var result:Int = 0;
 			if (!isString)
-				result = LuaL.dofile(lua, scriptName);
+				result = LuaL.loadfile(lua, scriptName);
 			else
-				result = LuaL.dostring(lua, scriptName);
+				result = LuaL.loadstring(lua, scriptName);
+
+			#if android backend.AndroidDiagnostics.checkpoint('Arquivo Lua compilado (status ' + result + '): ' + scriptName); #end
+			if (result == 0)
+			{
+				#if android backend.AndroidDiagnostics.checkpoint('Executando bytecode Lua: ' + scriptName); #end
+				result = Lua.pcall(lua, 0, Lua.LUA_MULTRET, 0);
+			}
 
 			#if android backend.AndroidDiagnostics.checkpoint('Arquivo Lua executado (status ' + result + '): ' + scriptName); #end
 			// The return code is not a Lua stack index. Read the top only on failure.

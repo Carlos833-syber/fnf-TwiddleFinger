@@ -13,7 +13,7 @@ REPO = Path(__file__).resolve().parents[1]
 class LuaScriptLoadingTest(unittest.TestCase):
     def test_success_and_error_paths(self):
         source = (REPO / "source/psychlua/FunkinLua.hx").read_text()
-        marker = source.index("checkpoint('Executando arquivo Lua: '")
+        marker = source.index("checkpoint('Compilando arquivo Lua: '")
         start = source.rfind("\n\t\ttry", 0, marker)
         end = source.index("\n\t\ttrace('lua file loaded succesfully:'", marker)
         self.assertGreater(start, 0)
@@ -37,11 +37,13 @@ class Test {
         loaded = true;
     }
     static function main() {
-        var status = Std.parseInt(Sys.getEnv("LUA_STATUS"));
+        var parseStatus = Std.parseInt(Sys.getEnv("LUA_PARSE_STATUS"));
+        var status = parseStatus != 0 ? parseStatus : Std.parseInt(Sys.getEnv("LUA_STATUS"));
         var fromFile = Sys.getEnv("LUA_FILE") == "yes";
         var t = new Test(fromFile ? "script.lua" : "function onEvent() end");
         t.load();
         if (LuaL.usedFile != fromFile) throw "Wrong input path";
+        if (Lua.executions != (parseStatus == 0 ? 1 : 0)) throw "Wrong execution path";
         if (status == 0) {
             if (!t.loaded || Lua.reads != 0 || Lua.closed) throw "Success was mishandled";
         } else {
@@ -55,19 +57,26 @@ class Test {
 }
 class LuaL {
     public static var usedFile = false;
-    public static function dofile(lua:Int, path:String):Int {
-        usedFile = true; return Std.parseInt(Sys.getEnv("LUA_STATUS"));
+    public static function loadfile(lua:Int, path:String):Int {
+        usedFile = true; return Std.parseInt(Sys.getEnv("LUA_PARSE_STATUS"));
     }
-    public static function dostring(lua:Int, code:String):Int {
-        return Std.parseInt(Sys.getEnv("LUA_STATUS"));
+    public static function loadstring(lua:Int, code:String):Int {
+        return Std.parseInt(Sys.getEnv("LUA_PARSE_STATUS"));
     }
 }
 class Lua {
+    public static inline var LUA_MULTRET = -1;
+    public static var executions = 0;
+    public static function pcall(lua:Int, nargs:Int, nresults:Int, errfunc:Int):Int {
+        if (nargs != 0 || nresults != LUA_MULTRET || errfunc != 0) throw "Wrong call arguments";
+        executions++;
+        return Std.parseInt(Sys.getEnv("LUA_STATUS"));
+    }
     public static var reads = 0;
     public static var closed = false;
     public static function tostring(lua:Int, index:Int):String {
         // Enforce the native API contract, including an empty stack on success.
-        if (Sys.getEnv("LUA_STATUS") == "0" || index != -1) Sys.exit(17);
+        if ((Sys.getEnv("LUA_STATUS") == "0" && Sys.getEnv("LUA_PARSE_STATUS") == "0") || index != -1) Sys.exit(17);
         reads++;
         return Sys.getEnv("LUA_NULL_ERROR") == "yes" ? null : "top-of-stack error";
     }
@@ -76,9 +85,9 @@ class Lua {
 class FlxColor { public static inline var RED = 0xff0000; }
 ''')
             for from_file in ("yes", "no"):
-                for status, null_error in (("0", "no"), ("1", "no"), ("2", "no"), ("1", "yes")):
-                    with self.subTest(file=from_file, status=status, null_error=null_error):
-                        env = dict(os.environ, LUA_STATUS=status, LUA_FILE=from_file,
+                for parse_status, status, null_error in (("0", "0", "no"), ("0", "1", "no"), ("0", "2", "no"), ("0", "1", "yes"), ("3", "0", "no")):
+                    with self.subTest(file=from_file, parse_status=parse_status, status=status, null_error=null_error):
+                        env = dict(os.environ, LUA_STATUS=status, LUA_PARSE_STATUS=parse_status, LUA_FILE=from_file,
                                    LUA_NULL_ERROR=null_error)
                         result = subprocess.run(
                             ["haxe", "-cp", temp, "-main", "Test", "--interp"],

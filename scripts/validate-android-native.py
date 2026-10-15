@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Reject ARM64 APKs that reference unavailable HXCPP runtime symbols."""
+"""Reject ARM64 APKs that reference unavailable HXCPP symbols or Lua imports from other libraries."""
 
 import argparse
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import zipfile
@@ -22,10 +23,11 @@ def validate(apk, nm):
         unresolved = [
             line.strip() for line in result.stdout.splitlines()
             if "hx::" in line or "__hxcpp_" in line
+            or re.search(r"\b(lua\w*|lj_\w*)\b", line)
         ]
         if unresolved:
-            raise SystemExit("Unresolved HXCPP runtime symbols:\n" + "\n".join(unresolved))
-    print("ARM64 native library: no unresolved HXCPP runtime symbols")
+            raise SystemExit("Unresolved HXCPP or unbound Lua runtime symbols:\n" + "\n".join(unresolved))
+    print("ARM64 native library: HXCPP resolved and Lua runtime bound locally")
 
 
 if __name__ == "__main__":
