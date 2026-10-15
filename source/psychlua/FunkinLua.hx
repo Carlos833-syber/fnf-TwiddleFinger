@@ -1515,28 +1515,38 @@ class FunkinLua {
 		ShaderFunctions.implement(this);
 		DeprecatedFunctions.implement(this);
 
-		try{
+		try
+		{
 			#if android backend.AndroidDiagnostics.checkpoint('Executando arquivo Lua: ' + scriptName); #end
 			var isString:Bool = !FileSystem.exists(scriptName);
-			var result:Dynamic = null;
-			if(!isString)
+			var result:Int = 0;
+			if (!isString)
 				result = LuaL.dofile(lua, scriptName);
 			else
 				result = LuaL.dostring(lua, scriptName);
 
-			var resultStr:String = Lua.tostring(lua, result);
-			if(resultStr != null && result != 0) {
+			#if android backend.AndroidDiagnostics.checkpoint('Arquivo Lua executado (status ' + result + '): ' + scriptName); #end
+			// The return code is not a Lua stack index. Read the top only on failure.
+			if (result != 0)
+			{
+				var resultStr:String = Lua.tostring(lua, -1);
+				if (resultStr == null)
+					resultStr = 'Lua script failed with status ' + result;
 				trace(resultStr);
 				#if windows
 				lime.app.Application.current.window.alert(resultStr, 'Error on lua script!');
 				#else
 				luaTrace('$scriptName\n$resultStr', true, false, FlxColor.RED);
 				#end
+				Lua.close(lua);
 				lua = null;
 				return;
 			}
-			if(isString) scriptName = 'unknown';
-		} catch(e:Dynamic) {
+			if (isString)
+				scriptName = 'unknown';
+		}
+		catch (e:Dynamic)
+		{
 			trace(e);
 			return;
 		}
